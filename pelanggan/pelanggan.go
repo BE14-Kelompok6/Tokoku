@@ -7,43 +7,42 @@ import (
 )
 
 type Pelanggan struct {
+	ID      int
 	User_id int
 	Nama    string
 	Alamat  string
 }
 
-type DaftarPelanggan struct {
+type PelangganMenu struct {
 	DB *sql.DB
 }
 
-func (dp *DaftarPelanggan) InsertPelanggan(newPelanggan DaftarPelanggan) (int, error) {
-	insertPelanggan, err := dp.DB.Prepare("INSERT INTO pelanggan (user_id, nama, alamat) VALUES (?,?,?)")
+func (pm *PelangganMenu) insertPelanggan(newPelanggan PelangganMenu) (bool, error) {
+	insertPelanggan, err := pm.DB.Prepare("INSERT INTO pelanggan (user_id, nama, alamat) VALUES (?,?,?)")
 	if err != nil {
 		log.Println("prepare insert pelanggan")
-		return 0, errors.New("prepare statement insert pelanggan error")
+		return false, errors.New("prepare statement insert pelanggan error")
 	}
 
 	res, err := insertPelanggan.Exec(newPelanggan.User_id, newPelanggan.Nama, newPelanggan.Alamat)
 
 	if err != nil {
 		log.Println("insert barang")
-		return 0, errors.New("insert barang error")
+		return false, errors.New("insert barang error")
 	}
 
 	affRows, err := res.RowsAffected()
 
 	if err != nil {
 		log.Println("after insert barang ", err.Error())
-		return 0, errors.New("error setelah insert barang")
+		return false, errors.New("error setelah insert barang")
 	}
 
 	if affRows <= 0 {
 		log.Println("no record affected")
-		return 0, errors.New("no record")
+		return false, errors.New("no record")
 	}
 
-	id, _ := res.LastInsertId()
-
-	return int(id), nil
+	return true, nil
 
 }
