@@ -1,12 +1,16 @@
 package user
 
-import ""
+import (
+	"database/sql"
+	"errors"
+	"log"
+)
 
 type User struct {
-	ID int
-	Nama string
+	ID       int
+	Nama     string
 	Password string
-	Role int
+	Role     int
 }
 
 type AuthMenu struct {
@@ -21,13 +25,11 @@ func (am *AuthMenu) Duplicate(name string) bool {
 		log.Println("Result scan error", err.Error())
 		return false
 	}
-	if idExist > 0 {
-		return true
-	}
-	return false
+	return true
 }
 
 func (am *AuthMenu) Register(newUser User) (bool, error) {
+
 	registerQry, err := am.DB.Prepare("INSERT INTO users (nama, password) values (?,?)")
 	if err != nil {
 		log.Println("prepare insert user ", err.Error())
@@ -46,6 +48,7 @@ func (am *AuthMenu) Register(newUser User) (bool, error) {
 	}
 
 	affRows, err := res.RowsAffected()
+
 	if err != nil {
 		log.Println("after insert user ", err.Error())
 		return false, errors.New("error setelah insert")
@@ -53,13 +56,13 @@ func (am *AuthMenu) Register(newUser User) (bool, error) {
 
 	if affRows <= 0 {
 		log.Println("no record affected")
-		return true, errors.New("no record")
+		return false, errors.New("no record")
 	}
 
 	return true, nil
 }
 
-func (am *AuthMenu) LoginPegawai(nama string, password string) (User, error) {
+func (am *AuthMenu) Login(nama string, password string) (User, error) {
 	loginQry, err := am.DB.Prepare("SELECT id FROM users WHERE nama = ? AND password = ?")
 	if err != nil {
 		log.Println("prepare insert user ", err.Error())
@@ -83,4 +86,42 @@ func (am *AuthMenu) LoginPegawai(nama string, password string) (User, error) {
 	res.Nama = nama
 
 	return res, nil
+}
+
+// func (am *AuthMenu) CekRole(nama string, id int) (int, error) {
+// 	cekRoleQry, err := am.DB.Prepare("SELECT role FROM users WHERE id = ? AND nama= ?")
+
+// 	if err != nil {
+// 		log.Println("prepare check role ", err.Error())
+// 		return User{}, errors.New("prepare statement check role error")
+// 	}
+
+// }
+
+func (am *AuthMenu) GantiPassword(newPassword string, id int) (bool, error) {
+	gantiPassQry, err := am.DB.Prepare("UPDATE users SET password = ? WHERE id = ?")
+	if err != nil {
+		log.Println("prepare update password ", err.Error())
+		return false, errors.New("prepare statement update password error")
+	}
+
+	res, err := gantiPassQry.Exec(newPassword, id)
+	if err != nil {
+		log.Println("update password ", err.Error())
+		return false, errors.New("update password error")
+	}
+	// Cek berapa baris yang terpengaruh query diatas
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after update password ", err.Error())
+		return false, errors.New("error setelah update password")
+	}
+
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
+	}
+
+	return true, nil
 }
