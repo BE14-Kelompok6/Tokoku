@@ -38,6 +38,7 @@ func main() {
 				for isLogin {
 					if role == 1 {
 						fmt.Println("## Menu Admin ##")
+						fmt.Println("Selamat datang", userRes.Nama)
 						fmt.Println("1. Tambah Pegawai")
 						fmt.Println("2. Hapus Data Pegawai")
 						fmt.Println("3. Hapus Data Barang")
@@ -73,6 +74,7 @@ func main() {
 					} else if role > 1 {
 						pegawaiMenu := 0
 						fmt.Println("## Menu Pegawai ##")
+						fmt.Println("Selamat datang", userRes.Nama)
 						fmt.Println("1. Tambah Barang")
 						fmt.Println("2. Update Barang")
 						fmt.Println("3. Data Pelanggan")
@@ -80,6 +82,26 @@ func main() {
 						fmt.Println("9. Logout")
 						fmt.Print("Masukkan menu : ")
 						fmt.Scanln(&pegawaiMenu)
+						if pegawaiMenu == 1 {
+							fmt.Println("## Tambah Barang ##")
+							fmt.Print("Masukan nama barang : ")
+							fmt.Print("Masukan stok barang : ")
+
+						} else if pegawaiMenu == 2 {
+							fmt.Println("## Update Barang ##")
+							fmt.Print("Masukan nama barang : ")
+							fmt.Print("Masukan stok barang : ")
+
+						} else if pegawaiMenu == 3 {
+							fmt.Println("## Data Pelanggan ##")
+							fmt.Print("Masukan nama pelanggan   : ")
+							fmt.Print("Masukan alamat pelanggan : ")
+
+						} else if pegawaiMenu == 4 {
+							fmt.Println("## Data Transaksi ##")
+						} else if pegawaiMenu == 9 {
+							isLogin = false
+						}
 					}
 
 				}
