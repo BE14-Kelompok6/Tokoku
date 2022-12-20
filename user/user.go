@@ -10,7 +10,7 @@ type User struct {
 	ID       int
 	Nama     string
 	Password string
-	Role     int
+	Role_id  int
 }
 
 type AuthMenu struct {
@@ -18,7 +18,7 @@ type AuthMenu struct {
 }
 
 func (am *AuthMenu) Duplicate(name string) bool {
-	res := am.DB.QueryRow("SELECT id FROM users where nama = ?", name)
+	res := am.DB.QueryRow("SELECT id, role_id FROM users where nama = ?", name)
 	var idExist int
 	err := res.Scan(&idExist)
 	if err != nil {
@@ -28,9 +28,9 @@ func (am *AuthMenu) Duplicate(name string) bool {
 	return true
 }
 
-func (am *AuthMenu) Register(newUser User) (bool, error) {
+func (am *AuthMenu) TambahPegawai(newUser User) (bool, error) {
 
-	registerQry, err := am.DB.Prepare("INSERT INTO users (nama, password) values (?,?)")
+	registerQry, err := am.DB.Prepare("INSERT INTO users (nama, password, role_id) values (?,?,2)")
 	if err != nil {
 		log.Println("prepare insert user ", err.Error())
 		return false, errors.New("prepare statement insert user error")
@@ -84,19 +84,8 @@ func (am *AuthMenu) Login(nama string, password string) (User, error) {
 	}
 
 	res.Nama = nama
-
 	return res, nil
 }
-
-// func (am *AuthMenu) CekRole(nama string, id int) (int, error) {
-// 	cekRoleQry, err := am.DB.Prepare("SELECT role FROM users WHERE id = ? AND nama= ?")
-
-// 	if err != nil {
-// 		log.Println("prepare check role ", err.Error())
-// 		return User{}, errors.New("prepare statement check role error")
-// 	}
-
-// }
 
 func (am *AuthMenu) GantiPassword(newPassword string, id int) (bool, error) {
 	gantiPassQry, err := am.DB.Prepare("UPDATE users SET password = ? WHERE id = ?")
