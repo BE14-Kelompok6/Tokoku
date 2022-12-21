@@ -3,6 +3,7 @@ package pelanggan
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -46,4 +47,24 @@ func (pm *PelangganMenu) TambahPelanggan(newPelanggan Pelanggan) (int, error) {
 	id, _ := res.LastInsertId()
 
 	return int(id), nil
+}
+
+func (pm *PelangganMenu) TampilkanPelanggan() {
+	rows, err := pm.DB.Query("SELECT p.id, p.nama, p.alamat, u.nama  FROM pelanggan p INNER JOIN users u ON u.id = p.user_id")
+	if err != nil {
+		log.Println("tampilkan pelanggan ", err.Error())
+		fmt.Println(errors.New("tampilkan pelanggan error"))
+	}
+	fmt.Println("ID", "Nama Pelanggan", "Alamat", "Pegawai")
+	for rows.Next() {
+		var id int
+		var nama, alamat, pegawai string
+		err = rows.Scan(&id, &nama, &alamat, &pegawai)
+		if err != nil {
+			log.Println("tampilkan barang ", err.Error())
+			fmt.Println(errors.New("tampilkan barang error"))
+		}
+		fmt.Println(id, nama, alamat, pegawai)
+	}
+
 }
