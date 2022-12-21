@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -113,4 +114,25 @@ func (am *AuthMenu) HapusPegawai(id int) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (am *AuthMenu) ShowUser() {
+	rows, err := am.DB.Query("SELECT id, nama FROM users WHERE role_id = 2")
+	if err != nil {
+		log.Println("tampilkan user ", err.Error())
+		fmt.Println(errors.New("tampilkan barang error"))
+	}
+
+	fmt.Println("ID", "Nama Pegawai")
+	for rows.Next() {
+		var id int
+		var nama string
+		err = rows.Scan(&id, &nama)
+		if err != nil {
+			log.Println("tampilkan barang ", err.Error())
+			fmt.Println(errors.New("tampilkan barang error"))
+		}
+		fmt.Println(id, nama)
+	}
+
 }
