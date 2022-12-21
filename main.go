@@ -5,6 +5,7 @@ import (
 	"tokoku/barang"
 	"tokoku/config"
 	"tokoku/pelanggan"
+	"tokoku/transaksi"
 	"tokoku/user"
 )
 
@@ -15,6 +16,7 @@ func main() {
 	var authMenu = user.AuthMenu{DB: conn}
 	var barangMenu = barang.BarangMenu{DB: conn}
 	var pelangganMenu = pelanggan.PelangganMenu{DB: conn}
+	var TransaksiMenu = transaksi.TransaksiMenu{DB: conn}
 
 	for inputMenu != 0 {
 		fmt.Println("## TOKOKU ##")
@@ -216,24 +218,43 @@ func main() {
 							fmt.Print("Tekan enter untuk melanjutkan : ")
 							fmt.Scanln()
 						} else if pegawaiMenu == 6 {
-							// var newTransaksi transaksi.Transaksi
-							fmt.Println("## Tambah Transaksi ##")
-							fmt.Print("Masukan nama barang : ")
-							// fmt.Scanln(&newTransaksi.Nama_barang)
-							// fmt.Print("Masukan stok barang : ")
-							// fmt.Scanln(&newTransaksi.Stok)
-							// newTransaksi.User_id = userRes.ID
+							var newTransaksi transaksi.Transaksi
+							var jwb string
+							var tmpBarang []int
+							var tmpTotal []int
+							var tmp, tempTotal int
+							fmt.Print("Masukan id pelanggan : ")
+							fmt.Scanln(&newTransaksi.Pelanggan_id)
+							for jwb != "n" {
+								barangMenu.Showbarang()
+								fmt.Println()
+								fmt.Print("Masukan id barang : ")
+								fmt.Scanln(&tmp)
+								fmt.Print("Masukan jumlah barang : ")
+								fmt.Scanln(&tempTotal)
+								TransaksiMenu.UpdateStock(tmp, tempTotal)
+								tmpBarang = append(tmpBarang, tmp)
+								tmpTotal = append(tmpTotal, tempTotal)
+								fmt.Print("Tambah barang ? (y/n) :  ")
+								fmt.Scanln(&jwb)
 
-							// trsRes, err :=
-							// if err != nil {
-							// 	fmt.Println(err.Error())
-							// }
-							// newTransaksi.ID = brgRes
-							// if brgRes != 0 {
-							// 	fmt.Println("Sukses menambahkan barang")
-							// } else {
-							// 	fmt.Println("Gagal menambahkan barang")
-							// }
+							}
+							for i := 0; i < len(tmpBarang); i++ {
+								newTransaksi.Barang_id = tmpBarang[i]
+								newTransaksi.Total = tmpTotal[i]
+								trsRes, err := TransaksiMenu.TambahTransaksi(newTransaksi)
+								if err != nil {
+
+									fmt.Println(err.Error())
+								}
+								newTransaksi.ID = trsRes
+								if trsRes != 0 {
+									fmt.Println("Sukses menambahkan Transaksi")
+								} else {
+									fmt.Println("Gagal menambahkan Transaksi")
+								}
+
+							}
 
 						} else if pegawaiMenu == 9 {
 							isLogin = false
