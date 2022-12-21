@@ -93,6 +93,7 @@ func main() {
 							fmt.Scanln(&newBarang.Nama_barang)
 							fmt.Print("Masukan stok barang : ")
 							fmt.Scanln(&newBarang.Stok)
+							newBarang.User_id = userRes.ID
 
 							brgRes, err := barangMenu.TambahBarang(newBarang)
 							if err != nil {
@@ -141,6 +142,7 @@ func main() {
 							fmt.Scanln(&newPelanggan.Nama)
 							fmt.Print("Masukan alamat pelanggan : ")
 							fmt.Scanln(&newPelanggan.Alamat)
+							newPelanggan.User_id = userRes.ID
 
 							plgRes, err := pelangganMenu.TambahPelanggan(newPelanggan)
 							if err != nil {
