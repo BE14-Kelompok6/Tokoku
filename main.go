@@ -177,7 +177,7 @@ func main() {
 								fmt.Println(err.Error())
 							}
 
-							newBarang.ID = brgRes
+							// newBarang.ID = brgRes
 							if brgRes != 0 {
 								fmt.Println("Sukses menambahkan barang")
 							} else {
