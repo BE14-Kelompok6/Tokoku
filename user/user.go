@@ -87,24 +87,24 @@ func (am *AuthMenu) Login(nama string, password string) (User, error) {
 	return res, nil
 }
 
-func (am *AuthMenu) GantiPassword(newPassword string, id int) (bool, error) {
-	gantiPassQry, err := am.DB.Prepare("UPDATE users SET password = ? WHERE id = ?")
+func (am *AuthMenu) HapusPegawai(id int) (bool, error) {
+	hapusQry, err := am.DB.Prepare("DELETE FROM users where id = ?")
 	if err != nil {
-		log.Println("prepare update password ", err.Error())
-		return false, errors.New("prepare statement update password error")
+		log.Println("prepare delete user", err.Error())
+		return false, errors.New("prepare statement delete user error")
 	}
 
-	res, err := gantiPassQry.Exec(newPassword, id)
+	res, err := hapusQry.Exec(id)
 	if err != nil {
-		log.Println("update password ", err.Error())
-		return false, errors.New("update password error")
+		log.Println("delete user ", err.Error())
+		return false, errors.New("delete user error")
 	}
-	// Cek berapa baris yang terpengaruh query diatas
+
 	affRows, err := res.RowsAffected()
 
 	if err != nil {
-		log.Println("after update password ", err.Error())
-		return false, errors.New("error setelah update password")
+		log.Println("after delete user ", err.Error())
+		return false, errors.New("error setelah delete")
 	}
 
 	if affRows <= 0 {
