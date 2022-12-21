@@ -216,7 +216,25 @@ func main() {
 							fmt.Print("Tekan enter untuk melanjutkan : ")
 							fmt.Scanln()
 						} else if pegawaiMenu == 6 {
-							fmt.Println("## Data Transaksi ##")
+							// var newTransaksi transaksi.Transaksi
+							fmt.Println("## Tambah Transaksi ##")
+							fmt.Print("Masukan nama barang : ")
+							// fmt.Scanln(&newTransaksi.Nama_barang)
+							// fmt.Print("Masukan stok barang : ")
+							// fmt.Scanln(&newTransaksi.Stok)
+							// newTransaksi.User_id = userRes.ID
+
+							// trsRes, err :=
+							// if err != nil {
+							// 	fmt.Println(err.Error())
+							// }
+							// newTransaksi.ID = brgRes
+							// if brgRes != 0 {
+							// 	fmt.Println("Sukses menambahkan barang")
+							// } else {
+							// 	fmt.Println("Gagal menambahkan barang")
+							// }
+
 						} else if pegawaiMenu == 9 {
 							isLogin = false
 						}
