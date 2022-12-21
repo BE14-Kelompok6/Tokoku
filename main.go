@@ -89,16 +89,11 @@ func main() {
 						fmt.Scanln(&pegawaiMenu)
 						if pegawaiMenu == 1 {
 							var newBarang barang.Barang
-
-							newBarang.User_id = userRes.ID
 							fmt.Println("## Tambah Barang ##")
 							fmt.Print("Masukan nama barang : ")
 							fmt.Scanln(&newBarang.Nama_barang)
 							fmt.Print("Masukan stok barang : ")
 							fmt.Scanln(&newBarang.Stok)
-
-							// fmt.Print("Masukan tanggal : ")
-							// fmt.Scanln(&newBarang.Tgl_input)
 
 							brgRes, err := barangMenu.TambahBarang(newBarang)
 							if err != nil {
@@ -134,10 +129,11 @@ func main() {
 							}
 
 						} else if pegawaiMenu == 3 {
-							fmt.Println("## Lihat Barang ##")
 
+							fmt.Println("Berikut daftar Barang Tokoku :")
 							barangMenu.TampilkanBarang()
-
+							fmt.Print("Tekan enter untuk melanjutkan : ")
+							fmt.Scanln()
 						} else if pegawaiMenu == 4 {
 							var newPelanggan pelanggan.Pelanggan
 							fmt.Println("## Data Pelanggan ##")
