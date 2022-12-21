@@ -67,10 +67,64 @@ func main() {
 							}
 
 						} else if adminMenu == 2 {
-							fmt.Println("Halo")
-							fmt.Println("Nama :", userRes.Nama)
-						} else if adminMenu == 3 {
+							var idPeg int
+							fmt.Println("Berikut daftar pegawai Tokoku :")
+							authMenu.ShowUser()
+							fmt.Println()
+							fmt.Print("Masukan id yang mau dihapus : ")
+							fmt.Scanln(&idPeg)
 
+							res, err := authMenu.HapusPegawai(idPeg)
+
+							if err != nil {
+								fmt.Println(err.Error())
+							}
+
+							if res {
+								fmt.Println("Sukses menghapus data pegawai")
+							} else {
+								fmt.Println("Gagal menghapus data pegawai")
+							}
+
+						} else if adminMenu == 3 {
+							var idbrg int
+							fmt.Println("Berikut daftar barang Tokoku :")
+							barangMenu.Showbarang()
+							fmt.Println()
+							fmt.Print("Masukan id yang mau dihapus : ")
+							fmt.Scanln(&idbrg)
+
+							res, err := barangMenu.Hapusbarang(idbrg)
+
+							if err != nil {
+								fmt.Println(err.Error())
+							}
+
+							if res {
+								fmt.Println("Sukses menghapus data barang")
+							} else {
+								fmt.Println("Gagal menghapus data barang")
+							}
+
+						} else if adminMenu == 4 {
+							var idPel int
+							fmt.Println("Berikut daftar pelanggan Tokoku :")
+							pelangganMenu.TampilkanPelanggan()
+							fmt.Println()
+							fmt.Print("Masukan id yang mau dihapus : ")
+							fmt.Scanln(&idPel)
+
+							res, err := pelangganMenu.HapusPelanggan(idPel)
+
+							if err != nil {
+								fmt.Println(err.Error())
+							}
+
+							if res {
+								fmt.Println("Sukses menghapus data pelanggan")
+							} else {
+								fmt.Println("Gagal menghapus data pelanggan")
+							}
 						} else if adminMenu == 9 {
 							isLogin = false
 						}
