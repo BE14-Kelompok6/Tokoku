@@ -51,13 +51,13 @@ func (bm *BarangMenu) TambahBarang(newBarang Barang) (int, error) {
 }
 
 func (bm *BarangMenu) UpdateBarang(newNamaBarang string, newStok int, id int) (bool, error) {
-	updateBarangQry, err := bm.DB.Prepare("UPDATE barang SET nama_barang = ?, stok = ? WHERE id = ?")
+	updateBarangQry, err := bm.DB.Prepare("UPDATE barang SET nama_barang = ?, stok = ? , tgl_input = now() WHERE id = ?")
 	if err != nil {
 		log.Println("prepare update barang ", err.Error())
 		return false, errors.New("prepare statement update barang error")
 	}
 
-	res, err := updateBarangQry.Exec(newNamaBarang, newStok)
+	res, err := updateBarangQry.Exec(newNamaBarang, newStok, id)
 	if err != nil {
 		log.Println("update barang", err.Error())
 		return false, errors.New("update barang error")
@@ -94,6 +94,26 @@ func (bm *BarangMenu) TampilkanBarang() {
 			fmt.Println(errors.New("tampilkan barang error"))
 		}
 		fmt.Println(id, "\t", nama_barang, "\t", stok, "\t", tgl_input, "\t", pegawai)
+	}
+
+}
+
+func (bm *BarangMenu) Showbarang() {
+	rows, err := bm.DB.Query("SELECT id, nama_barang, stok FROM barang")
+	if err != nil {
+		log.Println("tampilkan barang ", err.Error())
+		fmt.Println(errors.New("tampilkan barang error"))
+	}
+	fmt.Println("ID", "\tNama Barang", "\tStok")
+	for rows.Next() {
+		var id, stok int
+		var nama_barang string
+		err = rows.Scan(&id, &nama_barang, &stok)
+		if err != nil {
+			log.Println("tampilkan barang ", err.Error())
+			fmt.Println(errors.New("tampilkan barang error"))
+		}
+		fmt.Println(id, "\t", nama_barang, "\t", stok)
 	}
 
 }
