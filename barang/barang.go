@@ -79,27 +79,21 @@ func (bm *BarangMenu) UpdateBarang(newNamaBarang string, newStok int, id int) (b
 }
 
 func (bm *BarangMenu) TampilkanBarang() {
-	rows, err := bm.DB.Query("SELECT id, nama_barang, stok FROM barang")
+	rows, err := bm.DB.Query("SELECT b.id, b.nama_barang, b.stok, b.tgl_input, u.nama  FROM barang b INNER JOIN users u ON u.id = b.user_id")
 	if err != nil {
 		log.Println("tampilkan barang ", err.Error())
 		fmt.Println(errors.New("tampilkan barang error"))
 	}
-
-	// declare empty post variable
-	type barang struct {
-		id   int
-		Nama string
-		Stok int
-	}
-
-	// iterate over rows
+	fmt.Println("ID", "\tNama Barang", "\tStok", "\tTanggal Input", "\t\tPegawai")
 	for rows.Next() {
-		err = rows.Scan(&barang.id, &nama, &stok)
+		var id, stok int
+		var nama_barang, pegawai, tgl_input string
+		err = rows.Scan(&id, &nama_barang, &stok, &tgl_input, &pegawai)
 		if err != nil {
 			log.Println("tampilkan barang ", err.Error())
 			fmt.Println(errors.New("tampilkan barang error"))
 		}
-		fmt.Println(barang)
+		fmt.Println(id, "\t", nama_barang, "\t", stok, "\t", tgl_input, "\t", pegawai)
 	}
 
 }
