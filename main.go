@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"tokoku/barang"
 	"tokoku/config"
+	"tokoku/pelanggan"
 	"tokoku/user"
 )
 
@@ -13,6 +14,7 @@ func main() {
 	var conn = config.ConnectSQL(*cfg)
 	var authMenu = user.AuthMenu{DB: conn}
 	var barangMenu = barang.BarangMenu{DB: conn}
+	var pelangganMenu = pelanggan.PelangganMenu{DB: conn}
 
 	for inputMenu != 0 {
 		fmt.Println("## TOKOKU ##")
@@ -79,8 +81,9 @@ func main() {
 						fmt.Println("Selamat datang", userRes.Nama)
 						fmt.Println("1. Tambah Barang")
 						fmt.Println("2. Update Barang")
-						fmt.Println("3. Data Pelanggan")
-						fmt.Println("4. Transaksi")
+						fmt.Println("3. Lihat Barang")
+						fmt.Println("4. Data Pelanggan")
+						fmt.Println("5. Transaksi")
 						fmt.Println("9. Logout")
 						fmt.Print("Masukkan menu : ")
 						fmt.Scanln(&pegawaiMenu)
@@ -109,16 +112,52 @@ func main() {
 							}
 
 						} else if pegawaiMenu == 2 {
+							var newNamaBarang string
+							var newStok int
+							var idBrg int
 							fmt.Println("## Update Barang ##")
+							fmt.Print("Masukkan id : ")
+							fmt.Scanln(&idBrg)
 							fmt.Print("Masukan nama barang : ")
+							fmt.Scanln(&newNamaBarang)
 							fmt.Print("Masukan stok barang : ")
+							fmt.Scanln(newStok)
+							uptBrg, err := barangMenu.UpdateBarang(newNamaBarang, newStok, idBrg)
+							if err != nil {
+								fmt.Println(err.Error())
+							}
+
+							if uptBrg {
+								fmt.Println("Sukses mengupdate barang")
+							} else {
+								fmt.Println("Gagal mengupdate barang")
+							}
 
 						} else if pegawaiMenu == 3 {
-							fmt.Println("## Data Pelanggan ##")
-							fmt.Print("Masukan nama pelanggan   : ")
-							fmt.Print("Masukan alamat pelanggan : ")
+							fmt.Println("## Lihat Barang ##")
+
+							barangMenu.TampilkanBarang()
 
 						} else if pegawaiMenu == 4 {
+							var newPelanggan pelanggan.Pelanggan
+							fmt.Println("## Data Pelanggan ##")
+							fmt.Print("Masukan nama pelanggan   : ")
+							fmt.Scanln(&newPelanggan.Nama)
+							fmt.Print("Masukan alamat pelanggan : ")
+							fmt.Scanln(&newPelanggan.Alamat)
+
+							plgRes, err := pelangganMenu.TambahPelanggan(newPelanggan)
+							if err != nil {
+								fmt.Println(err.Error())
+							}
+							newPelanggan.ID = plgRes
+							if plgRes != 0 {
+								fmt.Println("Sukses menambahkan pelanggan")
+							} else {
+								fmt.Println("Gagal menambahkan pelanggan")
+							}
+
+						} else if pegawaiMenu == 5 {
 							fmt.Println("## Data Transaksi ##")
 						} else if pegawaiMenu == 9 {
 							isLogin = false
