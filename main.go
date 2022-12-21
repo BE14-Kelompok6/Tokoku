@@ -52,6 +52,7 @@ func main() {
 						fmt.Println("9. Logout")
 						fmt.Print("Masukkan menu : ")
 						fmt.Scanln(&adminMenu)
+
 						if adminMenu == 1 {
 							var newUser user.User
 							fmt.Print("Masukkan nama : ")
@@ -77,7 +78,6 @@ func main() {
 							fmt.Scanln(&idPeg)
 
 							res, err := authMenu.HapusPegawai(idPeg)
-
 							if err != nil {
 								fmt.Println(err.Error())
 							}
@@ -97,7 +97,6 @@ func main() {
 							fmt.Scanln(&idbrg)
 
 							res, err := barangMenu.Hapusbarang(idbrg)
-
 							if err != nil {
 								fmt.Println(err.Error())
 							}
@@ -117,7 +116,6 @@ func main() {
 							fmt.Scanln(&idPel)
 
 							res, err := pelangganMenu.HapusPelanggan(idPel)
-
 							if err != nil {
 								fmt.Println(err.Error())
 							}
@@ -127,9 +125,30 @@ func main() {
 							} else {
 								fmt.Println("Gagal menghapus data pelanggan")
 							}
+
+						} else if adminMenu == 5 {
+							var idTrs int
+							fmt.Println("Berikut daftar transaksi Tokoku :")
+							TransaksiMenu.TampilkanTransaksi()
+							fmt.Println()
+							fmt.Print("Masukan id yang mau dihapus : ")
+							fmt.Scanln(&idTrs)
+
+							res, err := TransaksiMenu.HapusTransaksi(idTrs)
+							if err != nil {
+								fmt.Println(err.Error())
+							}
+
+							if res {
+								fmt.Println("Sukses menghapus data transaksi")
+							} else {
+								fmt.Println("Gagal menghapus data transaksi")
+							}
+
 						} else if adminMenu == 9 {
 							isLogin = false
 						}
+
 					} else if role > 1 {
 						pegawaiMenu := 0
 						fmt.Println("## Menu Pegawai ##")
@@ -143,6 +162,7 @@ func main() {
 						fmt.Println("9. Logout")
 						fmt.Print("Masukkan menu : ")
 						fmt.Scanln(&pegawaiMenu)
+
 						if pegawaiMenu == 1 {
 							var newBarang barang.Barang
 							fmt.Println("## Tambah Barang ##")
@@ -156,6 +176,7 @@ func main() {
 							if err != nil {
 								fmt.Println(err.Error())
 							}
+
 							newBarang.ID = brgRes
 							if brgRes != 0 {
 								fmt.Println("Sukses menambahkan barang")
@@ -175,6 +196,7 @@ func main() {
 							fmt.Scanln(&newNamaBarang)
 							fmt.Print("Masukan stok barang : ")
 							fmt.Scanln(&newStok)
+
 							uptBrg, err := barangMenu.UpdateBarang(newNamaBarang, newStok, idBrg)
 							if err != nil {
 								fmt.Println(err.Error())
@@ -187,11 +209,11 @@ func main() {
 							}
 
 						} else if pegawaiMenu == 3 {
-
 							fmt.Println("Berikut daftar Barang Tokoku :")
 							barangMenu.TampilkanBarang()
 							fmt.Print("Tekan enter untuk melanjutkan : ")
 							fmt.Scanln()
+
 						} else if pegawaiMenu == 4 {
 							var newPelanggan pelanggan.Pelanggan
 							fmt.Println("## Data Pelanggan ##")
@@ -205,6 +227,7 @@ func main() {
 							if err != nil {
 								fmt.Println(err.Error())
 							}
+
 							newPelanggan.ID = plgRes
 							if plgRes != 0 {
 								fmt.Println("Sukses menambahkan pelanggan")
@@ -217,6 +240,7 @@ func main() {
 							pelangganMenu.TampilkanPelanggan()
 							fmt.Print("Tekan enter untuk melanjutkan : ")
 							fmt.Scanln()
+
 						} else if pegawaiMenu == 6 {
 							var newTransaksi transaksi.Transaksi
 							var jwb string
@@ -225,6 +249,7 @@ func main() {
 							var tmp, tempTotal int
 							fmt.Print("Masukan id pelanggan : ")
 							fmt.Scanln(&newTransaksi.Pelanggan_id)
+
 							for jwb != "n" {
 								barangMenu.Showbarang()
 								fmt.Println()
@@ -244,9 +269,9 @@ func main() {
 								newTransaksi.Total = tmpTotal[i]
 								trsRes, err := TransaksiMenu.TambahTransaksi(newTransaksi)
 								if err != nil {
-
 									fmt.Println(err.Error())
 								}
+
 								newTransaksi.ID = trsRes
 								if trsRes != 0 {
 									fmt.Println("Sukses menambahkan Transaksi")
