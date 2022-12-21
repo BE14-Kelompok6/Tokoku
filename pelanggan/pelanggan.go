@@ -17,7 +17,7 @@ type PelangganMenu struct {
 	DB *sql.DB
 }
 
-func (pm *PelangganMenu) insertPelanggan(newPelanggan PelangganMenu) (bool, error) {
+func (pm *PelangganMenu) insertPelanggan(newPelanggan Pelanggan) (bool, error) {
 	insertPelanggan, err := pm.DB.Prepare("INSERT INTO pelanggan (user_id, nama, alamat) VALUES (?,?,?)")
 	if err != nil {
 		log.Println("prepare insert pelanggan")
