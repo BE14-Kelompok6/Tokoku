@@ -102,21 +102,21 @@ func (tm *TransaksiMenu) UpdateStock(barang_id int, total int) (int, error) {
 }
 
 func (tm *TransaksiMenu) TampilkanTransaksi() {
-	rows, err := tm.DB.Query("SELECT t.id, t.total, t.tgl_transaksi, b.nama_barang, u.nama FROM transaksi t INNER JOIN barang b ON b.id = t.barang_id, JOIN users u ON u.id = t.user_id")
+	rows, err := tm.DB.Query("SELECT t.id, t.tgl_transaksi, b.nama_barang, t.total, u.nama FROM transaksi t INNER JOIN barang b ON b.id = t.barang_id INNER JOIN users u ON u.id = b.user_id")
 	if err != nil {
-		log.Println("tampilkan pelanggan ", err.Error())
-		fmt.Println(errors.New("tampilkan pelanggan error"))
+		log.Println("tampilkan transaksi ", err.Error())
+		fmt.Println(errors.New("tampilkan transaksi error"))
 	}
 	fmt.Println("ID", "Nama Barang", "Total", "Tanggal Transaksi", "Pegawai")
 	for rows.Next() {
 		var id, total int
 		var namabarang, tanggal, pegawai string
-		err = rows.Scan(&id, &namabarang, &total, &tanggal, &pegawai)
+		err = rows.Scan(&id, &tanggal, &namabarang, &total, &pegawai)
 		if err != nil {
 			log.Println("tampilkan barang ", err.Error())
 			fmt.Println(errors.New("tampilkan barang error"))
 		}
-		fmt.Println(id, namabarang, total, tanggal, pegawai)
+		fmt.Println(id, tanggal, namabarang, total, pegawai)
 	}
 
 }
