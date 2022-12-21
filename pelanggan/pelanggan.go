@@ -17,32 +17,33 @@ type PelangganMenu struct {
 	DB *sql.DB
 }
 
-func (pm *PelangganMenu) insertPelanggan(newPelanggan Pelanggan) (bool, error) {
-	insertPelanggan, err := pm.DB.Prepare("INSERT INTO pelanggan (user_id, nama, alamat) VALUES (?,?,?)")
+func (pm *PelangganMenu) TambahPelanggan(newPelanggan Pelanggan) (int, error) {
+	insertPelangganQry, err := pm.DB.Prepare("INSERT INTO pelanggan (user_id, nama, alamat) values (?,?,?)")
 	if err != nil {
-		log.Println("prepare insert pelanggan")
-		return false, errors.New("prepare statement insert pelanggan error")
+		log.Println("prepare insert pelanggan ", err.Error())
+		return 0, errors.New("prepare statement insert pelanggan error")
 	}
 
-	res, err := insertPelanggan.Exec(newPelanggan.User_id, newPelanggan.Nama, newPelanggan.Alamat)
+	res, err := insertPelangganQry.Exec(newPelanggan.User_id, newPelanggan.Nama, newPelanggan.Alamat)
 
 	if err != nil {
-		log.Println("insert barang")
-		return false, errors.New("insert barang error")
+		log.Println("insert pelanggan ", err.Error())
+		return 0, errors.New("insert pelanggan error")
 	}
 
 	affRows, err := res.RowsAffected()
 
 	if err != nil {
-		log.Println("after insert barang ", err.Error())
-		return false, errors.New("error setelah insert barang")
+		log.Println("after insert pelanggan ", err.Error())
+		return 0, errors.New("error setelah insert pelanggan")
 	}
 
 	if affRows <= 0 {
 		log.Println("no record affected")
-		return false, errors.New("no record")
+		return 0, errors.New("no record")
 	}
 
-	return true, nil
+	id, _ := res.LastInsertId()
 
+	return int(id), nil
 }
