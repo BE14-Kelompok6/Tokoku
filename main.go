@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"tokoku/barang"
 	"tokoku/config"
 	"tokoku/user"
 )
@@ -11,6 +12,7 @@ func main() {
 	var cfg = config.ReadConfig()
 	var conn = config.ConnectSQL(*cfg)
 	var authMenu = user.AuthMenu{DB: conn}
+	var barangMenu = barang.BarangMenu{DB: conn}
 
 	for inputMenu != 0 {
 		fmt.Println("## TOKOKU ##")
@@ -83,9 +85,28 @@ func main() {
 						fmt.Print("Masukkan menu : ")
 						fmt.Scanln(&pegawaiMenu)
 						if pegawaiMenu == 1 {
+							var newBarang barang.Barang
+
+							newBarang.User_id = userRes.ID
 							fmt.Println("## Tambah Barang ##")
 							fmt.Print("Masukan nama barang : ")
+							fmt.Scanln(&newBarang.Nama_barang)
 							fmt.Print("Masukan stok barang : ")
+							fmt.Scanln(&newBarang.Stok)
+
+							// fmt.Print("Masukan tanggal : ")
+							// fmt.Scanln(&newBarang.Tgl_input)
+
+							brgRes, err := barangMenu.TambahBarang(newBarang)
+							if err != nil {
+								fmt.Println(err.Error())
+							}
+							newBarang.ID = brgRes
+							if brgRes != 0 {
+								fmt.Println("Sukses menambahkan barang")
+							} else {
+								fmt.Println("Gagal menambahkan barang")
+							}
 
 						} else if pegawaiMenu == 2 {
 							fmt.Println("## Update Barang ##")
