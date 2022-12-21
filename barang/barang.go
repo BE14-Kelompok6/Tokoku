@@ -117,3 +117,30 @@ func (bm *BarangMenu) Showbarang() {
 	}
 
 }
+func (bm *BarangMenu) Hapusbarang(id int) (bool, error) {
+	hapusBarangQry, err := bm.DB.Prepare("DELETE FROM barang where id = ?")
+	if err != nil {
+		log.Println("prepare hapus barang ", err.Error())
+		return false, errors.New("prepare statement hapus barang error")
+	}
+
+	res, err := hapusBarangQry.Exec(id)
+	if err != nil {
+		log.Println("hapus barang", err.Error())
+		return false, errors.New("hapus barang error")
+	}
+
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after hapus barang ", err.Error())
+		return false, errors.New("error setelah hapus barang")
+	}
+
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
+	}
+
+	return true, nil
+}
