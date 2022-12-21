@@ -33,7 +33,6 @@ func main() {
 			if err != nil {
 				fmt.Println(err.Error())
 			}
-			// fmt.Println(userRes)
 
 			if userRes.ID > 0 {
 				isLogin := true
@@ -108,15 +107,16 @@ func main() {
 
 						} else if pegawaiMenu == 2 {
 							var newNamaBarang string
-							var newStok int
-							var idBrg int
+							var newStok, idBrg int
 							fmt.Println("## Update Barang ##")
+							fmt.Println("Berikut list barang Tokoku :")
+							barangMenu.Showbarang()
 							fmt.Print("Masukkan id : ")
 							fmt.Scanln(&idBrg)
 							fmt.Print("Masukan nama barang : ")
 							fmt.Scanln(&newNamaBarang)
 							fmt.Print("Masukan stok barang : ")
-							fmt.Scanln(newStok)
+							fmt.Scanln(&newStok)
 							uptBrg, err := barangMenu.UpdateBarang(newNamaBarang, newStok, idBrg)
 							if err != nil {
 								fmt.Println(err.Error())
