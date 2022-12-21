@@ -18,30 +18,33 @@ type BarangMenu struct {
 	DB *sql.DB
 }
 
-func (bm *BarangMenu) insertBarang(newBarang Barang) (bool, error) {
-	insertBarang, err := bm.DB.Prepare("INSERT INTO barang (user_id, nama_barang, stok, tgl_input) VALUES (?,?,?,now())")
+func (bm *BarangMenu) TambahBarang(newBarang Barang) (int, error) {
+	insertActivityQry, err := bm.DB.Prepare("INSERT INTO barang (user_id, nama_barang, stok, tgl_input) values (?,?,?,now())")
 	if err != nil {
-		log.Println("prepare insert barang")
-		return false, errors.New("prepare statement insert barang error")
+		log.Println("prepare insert barang ", err.Error())
+		return 0, errors.New("prepare statement insert barang error")
 	}
-	res, err := insertBarang.Exec(newBarang.User_id, newBarang.Nama_barang, newBarang.Stok, newBarang.Tgl_input)
+
+	res, err := insertActivityQry.Exec(newBarang.User_id, newBarang.Nama_barang, newBarang.Stok)
 
 	if err != nil {
-		log.Println("insert barang")
-		return false, errors.New("insert barang error")
+		log.Println("insert barang ", err.Error())
+		return 0, errors.New("insert barang error")
 	}
 
 	affRows, err := res.RowsAffected()
 
 	if err != nil {
 		log.Println("after insert barang ", err.Error())
-		return false, errors.New("error setelah insert barang")
+		return 0, errors.New("error setelah insert barang")
 	}
 
 	if affRows <= 0 {
 		log.Println("no record affected")
-		return false, errors.New("no record")
+		return 0, errors.New("no record")
 	}
 
-	return true, nil
+	id, _ := res.LastInsertId()
+
+	return int(id), nil
 }
