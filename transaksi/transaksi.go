@@ -100,3 +100,51 @@ func (tm *TransaksiMenu) UpdateStock(barang_id int, total int) (int, error) {
 
 	return int(id), nil
 }
+
+func (tm *TransaksiMenu) TampilkanTransaksi() {
+	rows, err := tm.DB.Query("SELECT t.id, t.total, t.tgl_transaksi, b.nama_barang, u.nama FROM transaksi t INNER JOIN barang b ON b.id = t.barang_id, JOIN users u ON u.id = t.user_id")
+	if err != nil {
+		log.Println("tampilkan pelanggan ", err.Error())
+		fmt.Println(errors.New("tampilkan pelanggan error"))
+	}
+	fmt.Println("ID", "Nama Barang", "Total", "Tanggal Transaksi", "Pegawai")
+	for rows.Next() {
+		var id, total int
+		var namabarang, tanggal, pegawai string
+		err = rows.Scan(&id, &namabarang, &total, &tanggal, &pegawai)
+		if err != nil {
+			log.Println("tampilkan barang ", err.Error())
+			fmt.Println(errors.New("tampilkan barang error"))
+		}
+		fmt.Println(id, namabarang, total, tanggal, pegawai)
+	}
+
+}
+
+func (tm *TransaksiMenu) HapusTransaksi(id int) (bool, error) {
+	hapustransaksiQry, err := tm.DB.Prepare("DELETE FROM transaksi where id = ?")
+	if err != nil {
+		log.Println("prepare hapus transaksi ", err.Error())
+		return false, errors.New("prepare statement hapus transaksi error")
+	}
+
+	res, err := hapustransaksiQry.Exec(id)
+	if err != nil {
+		log.Println("hapus transaksi", err.Error())
+		return false, errors.New("hapus transaksi error")
+	}
+
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after hapus transaksi ", err.Error())
+		return false, errors.New("error setelah hapus transaksi")
+	}
+
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
+	}
+
+	return true, nil
+}
