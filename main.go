@@ -82,7 +82,8 @@ func main() {
 						fmt.Println("2. Update Barang")
 						fmt.Println("3. Lihat Barang")
 						fmt.Println("4. Data Pelanggan")
-						fmt.Println("5. Transaksi")
+						fmt.Println("5. Lihat Pelanggan")
+						fmt.Println("6. Transaksi")
 						fmt.Println("9. Logout")
 						fmt.Print("Masukkan menu : ")
 						fmt.Scanln(&pegawaiMenu)
@@ -156,6 +157,11 @@ func main() {
 							}
 
 						} else if pegawaiMenu == 5 {
+							fmt.Println("Berikut daftar pelanggan Tokoku :")
+							pelangganMenu.TampilkanPelanggan()
+							fmt.Print("Tekan enter untuk melanjutkan : ")
+							fmt.Scanln()
+						} else if pegawaiMenu == 6 {
 							fmt.Println("## Data Transaksi ##")
 						} else if pegawaiMenu == 9 {
 							isLogin = false
