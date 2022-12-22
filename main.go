@@ -278,7 +278,7 @@ func main() {
 							for isTrsMenu {
 								fmt.Println("## Data Transaksi ##")
 								fmt.Println("1. Tambah Transaksi")
-								// fmt.Println("2. Lihat Transaksi")
+								fmt.Println("2. Lihat Transaksi")
 								fmt.Println("9. Kembali")
 								fmt.Print("Masukkan menu : ")
 								fmt.Scanln(&trsMenu)
@@ -338,6 +338,11 @@ func main() {
 										fmt.Println("Gagal menambahkan Transaksi")
 									}
 
+								} else if trsMenu == 2 {
+									fmt.Println("Berikut daftar transaksi Tokoku :")
+									TransaksiMenu.TampilkanTransaksi()
+									fmt.Print("Tekan enter untuk melanjutkan : ")
+									fmt.Scanln()
 								} else if trsMenu == 9 {
 									isTrsMenu = false
 								}
