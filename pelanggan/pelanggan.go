@@ -55,7 +55,7 @@ func (pm *PelangganMenu) TampilkanPelanggan() {
 		log.Println("tampilkan pelanggan ", err.Error())
 		fmt.Println(errors.New("tampilkan pelanggan error"))
 	}
-	fmt.Println("ID", "Nama Pelanggan", "Alamat", "Pegawai")
+	fmt.Println("ID", "\tNama Pelanggan", "\tAlamat", "\tPegawai")
 	for rows.Next() {
 		var id int
 		var nama, alamat, pegawai string
@@ -64,7 +64,7 @@ func (pm *PelangganMenu) TampilkanPelanggan() {
 			log.Println("tampilkan barang ", err.Error())
 			fmt.Println(errors.New("tampilkan barang error"))
 		}
-		fmt.Println(id, nama, alamat, pegawai)
+		fmt.Println(id, "\t", nama, "\t", alamat, "\t", pegawai)
 	}
 
 }
