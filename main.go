@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"tokoku/barang"
 	"tokoku/config"
 	"tokoku/pelanggan"
@@ -42,8 +43,9 @@ func main() {
 				role := userRes.ID
 				for isLogin {
 					if role == 1 {
+						now := time.Now()
 						fmt.Println("## Menu Admin ##")
-						fmt.Println("Selamat datang", userRes.Nama)
+						fmt.Println("Selamat datang, ", userRes.Nama, "-", now.Format("Jan 2, 2006"))
 						fmt.Println("1. Tambah Pegawai")
 						fmt.Println("2. Hapus Data Pegawai")
 						fmt.Println("3. Hapus Data Barang")
@@ -151,136 +153,185 @@ func main() {
 
 					} else if role > 1 {
 						pegawaiMenu := 0
+						now := time.Now()
 						fmt.Println("## Menu Pegawai ##")
-						fmt.Println("Selamat datang", userRes.Nama)
-						fmt.Println("1. Tambah Barang")
-						fmt.Println("2. Update Barang")
-						fmt.Println("3. Lihat Barang")
-						fmt.Println("4. Data Pelanggan")
-						fmt.Println("5. Lihat Pelanggan")
-						fmt.Println("6. Transaksi")
+						fmt.Println("Selamat datang, ", userRes.Nama, "-", now.Format("Jan 2, 2006"))
+						fmt.Println("1. Data Barang")
+						fmt.Println("2. Data Pelanggan")
+						fmt.Println("3. Data Transaksi")
 						fmt.Println("9. Logout")
 						fmt.Print("Masukkan menu : ")
 						fmt.Scanln(&pegawaiMenu)
 
 						if pegawaiMenu == 1 {
-							var newBarang barang.Barang
-							fmt.Println("## Tambah Barang ##")
-							fmt.Print("Masukan nama barang : ")
-							fmt.Scanln(&newBarang.Nama_barang)
-							fmt.Print("Masukan stok barang : ")
-							fmt.Scanln(&newBarang.Stok)
-							newBarang.User_id = userRes.ID
 
-							brgRes, err := barangMenu.TambahBarang(newBarang)
-							if err != nil {
-								fmt.Println(err.Error())
-							}
+							brgMenu := 0
+							isBrgMenu := true
+							for isBrgMenu {
+								fmt.Println("## Data Barang ##")
+								fmt.Println("1. Tambah Barang")
+								fmt.Println("2. Update Barang")
+								fmt.Println("3. Lihat Barang")
+								fmt.Println("9. Kembali")
+								fmt.Print("Masukkan menu : ")
+								fmt.Scanln(&brgMenu)
 
-							// newBarang.ID = brgRes
-							if brgRes != 0 {
-								fmt.Println("Sukses menambahkan barang")
-							} else {
-								fmt.Println("Gagal menambahkan barang")
+								if brgMenu == 1 {
+									var newBarang barang.Barang
+									fmt.Println("## Tambah Barang ##")
+									fmt.Print("Masukan nama barang : ")
+									fmt.Scanln(&newBarang.Nama_barang)
+									fmt.Print("Masukan stok barang : ")
+									fmt.Scanln(&newBarang.Stok)
+									newBarang.User_id = userRes.ID
+
+									brgRes, err := barangMenu.TambahBarang(newBarang)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+
+									// newBarang.ID = brgRes
+									if brgRes != 0 {
+										fmt.Println("Sukses menambahkan barang")
+									} else {
+										fmt.Println("Gagal menambahkan barang")
+									}
+								} else if brgMenu == 2 {
+									var newNamaBarang string
+									var newStok, idBrg int
+									fmt.Println("## Update Barang ##")
+									fmt.Println("Berikut list barang Tokoku :")
+									barangMenu.Showbarang()
+									fmt.Print("Masukkan id : ")
+									fmt.Scanln(&idBrg)
+									fmt.Print("Masukan nama barang : ")
+									fmt.Scanln(&newNamaBarang)
+									fmt.Print("Masukan stok barang : ")
+									fmt.Scanln(&newStok)
+
+									uptBrg, err := barangMenu.UpdateBarang(newNamaBarang, newStok, idBrg)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+
+									if uptBrg {
+										fmt.Println("Sukses mengupdate barang")
+									} else {
+										fmt.Println("Gagal mengupdate barang")
+									}
+								} else if brgMenu == 3 {
+									fmt.Println("Berikut daftar Barang Tokoku :")
+									barangMenu.TampilkanBarang()
+									fmt.Print("Tekan enter untuk melanjutkan : ")
+									fmt.Scanln()
+								} else if brgMenu == 9 {
+									isBrgMenu = false
+								}
 							}
 
 						} else if pegawaiMenu == 2 {
-							var newNamaBarang string
-							var newStok, idBrg int
-							fmt.Println("## Update Barang ##")
-							fmt.Println("Berikut list barang Tokoku :")
-							barangMenu.Showbarang()
-							fmt.Print("Masukkan id : ")
-							fmt.Scanln(&idBrg)
-							fmt.Print("Masukan nama barang : ")
-							fmt.Scanln(&newNamaBarang)
-							fmt.Print("Masukan stok barang : ")
-							fmt.Scanln(&newStok)
+							plgMenu := 0
+							isPlgMenu := true
+							for isPlgMenu {
+								fmt.Println("## Data Pelanggan ##")
+								fmt.Println("1. Tambah Pelanggan")
+								fmt.Println("2. Lihat Pelanggan")
+								fmt.Println("9. Kembali")
+								fmt.Print("Masukkan menu : ")
+								fmt.Scanln(&plgMenu)
 
-							uptBrg, err := barangMenu.UpdateBarang(newNamaBarang, newStok, idBrg)
-							if err != nil {
-								fmt.Println(err.Error())
-							}
+								if plgMenu == 1 {
+									var newPelanggan pelanggan.Pelanggan
+									fmt.Println("## Data Pelanggan ##")
+									fmt.Print("Masukan nama pelanggan   : ")
+									fmt.Scanln(&newPelanggan.Nama)
+									fmt.Print("Masukan alamat pelanggan : ")
+									fmt.Scanln(&newPelanggan.Alamat)
+									newPelanggan.User_id = userRes.ID
 
-							if uptBrg {
-								fmt.Println("Sukses mengupdate barang")
-							} else {
-								fmt.Println("Gagal mengupdate barang")
+									plgRes, err := pelangganMenu.TambahPelanggan(newPelanggan)
+									if err != nil {
+										fmt.Println(err.Error())
+									}
+
+									newPelanggan.ID = plgRes
+									if plgRes != 0 {
+										fmt.Println("Sukses menambahkan pelanggan")
+									} else {
+										fmt.Println("Gagal menambahkan pelanggan")
+									}
+								} else if plgMenu == 2 {
+									fmt.Println("Berikut daftar pelanggan Tokoku :")
+									pelangganMenu.TampilkanPelanggan()
+									fmt.Print("Tekan enter untuk melanjutkan : ")
+									fmt.Scanln()
+								} else if plgMenu == 9 {
+									isPlgMenu = false
+								}
 							}
 
 						} else if pegawaiMenu == 3 {
-							fmt.Println("Berikut daftar Barang Tokoku :")
-							barangMenu.TampilkanBarang()
-							fmt.Print("Tekan enter untuk melanjutkan : ")
-							fmt.Scanln()
+							trsMenu := 0
+							isTrsMenu := true
+							for isTrsMenu {
+								fmt.Println("## Data Transaksi ##")
+								fmt.Println("1. Tambah Transaksi")
+								// fmt.Println("2. Lihat Transaksi")
+								fmt.Println("9. Kembali")
+								fmt.Print("Masukkan menu : ")
+								fmt.Scanln(&trsMenu)
 
-						} else if pegawaiMenu == 4 {
-							var newPelanggan pelanggan.Pelanggan
-							fmt.Println("## Data Pelanggan ##")
-							fmt.Print("Masukan nama pelanggan   : ")
-							fmt.Scanln(&newPelanggan.Nama)
-							fmt.Print("Masukan alamat pelanggan : ")
-							fmt.Scanln(&newPelanggan.Alamat)
-							newPelanggan.User_id = userRes.ID
+								if trsMenu == 1 {
+									var newTransaksi transaksi.Transaksi
+									var jwb string
+									var tmpBarang []int
+									var tmpTotal []int
+									var tmp, tempTotal int
+									fmt.Print("Masukan id pelanggan : ")
+									fmt.Scanln(&newTransaksi.Pelanggan_id)
 
-							plgRes, err := pelangganMenu.TambahPelanggan(newPelanggan)
-							if err != nil {
-								fmt.Println(err.Error())
-							}
+									for jwb != "n" {
+										barangMenu.Showbarang()
+										fmt.Println()
+										fmt.Print("Masukan id barang : ")
+										fmt.Scanln(&tmp)
+										fmt.Print("Masukan jumlah barang : ")
+										fmt.Scanln(&tempTotal)
+										TransaksiMenu.UpdateStock(tmp, tempTotal)
+										tmpBarang = append(tmpBarang, tmp)
+										tmpTotal = append(tmpTotal, tempTotal)
+										fmt.Print("Tambah barang ? (y/n) :  ")
+										fmt.Scanln(&jwb)
 
-							newPelanggan.ID = plgRes
-							if plgRes != 0 {
-								fmt.Println("Sukses menambahkan pelanggan")
-							} else {
-								fmt.Println("Gagal menambahkan pelanggan")
-							}
+									}
+									for i := 0; i < len(tmpBarang); i++ {
+										newTransaksi.Barang_id = tmpBarang[i]
+										newTransaksi.Total = tmpTotal[i]
+										trsRes, err := TransaksiMenu.TambahTransaksi(newTransaksi)
+										if err != nil {
+											fmt.Println(err.Error())
+										}
 
-						} else if pegawaiMenu == 5 {
-							fmt.Println("Berikut daftar pelanggan Tokoku :")
-							pelangganMenu.TampilkanPelanggan()
-							fmt.Print("Tekan enter untuk melanjutkan : ")
-							fmt.Scanln()
+										newTransaksi.ID = trsRes
+										if trsRes != 0 {
+											ctkNota := ""
+											fmt.Println("Sukses menambahkan Transaksi")
+											fmt.Println("Cetak nota ? : (y/n)")
+											fmt.Scanln(&ctkNota)
+											if ctkNota == "y" {
 
-						} else if pegawaiMenu == 6 {
-							var newTransaksi transaksi.Transaksi
-							var jwb string
-							var tmpBarang []int
-							var tmpTotal []int
-							var tmp, tempTotal int
-							fmt.Print("Masukan id pelanggan : ")
-							fmt.Scanln(&newTransaksi.Pelanggan_id)
+											}
 
-							for jwb != "n" {
-								barangMenu.Showbarang()
-								fmt.Println()
-								fmt.Print("Masukan id barang : ")
-								fmt.Scanln(&tmp)
-								fmt.Print("Masukan jumlah barang : ")
-								fmt.Scanln(&tempTotal)
-								TransaksiMenu.UpdateStock(tmp, tempTotal)
-								tmpBarang = append(tmpBarang, tmp)
-								tmpTotal = append(tmpTotal, tempTotal)
-								fmt.Print("Tambah barang ? (y/n) :  ")
-								fmt.Scanln(&jwb)
+										} else {
+											fmt.Println("Gagal menambahkan Transaksi")
+										}
 
-							}
-							for i := 0; i < len(tmpBarang); i++ {
-								newTransaksi.Barang_id = tmpBarang[i]
-								newTransaksi.Total = tmpTotal[i]
-								trsRes, err := TransaksiMenu.TambahTransaksi(newTransaksi)
-								if err != nil {
-									fmt.Println(err.Error())
-								}
-
-								newTransaksi.ID = trsRes
-								if trsRes != 0 {
-									fmt.Println("Sukses menambahkan Transaksi")
-								} else {
-									fmt.Println("Gagal menambahkan Transaksi")
+									}
+								} else if trsMenu == 9 {
+									isTrsMenu = false
 								}
 
 							}
-
 						} else if pegawaiMenu == 9 {
 							isLogin = false
 						}
