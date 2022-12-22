@@ -256,7 +256,7 @@ func main() {
 										fmt.Println(err.Error())
 									}
 
-									newPelanggan.ID = plgRes
+									// newPelanggan.ID = plgRes
 									if plgRes != 0 {
 										fmt.Println("Sukses menambahkan pelanggan")
 									} else {
@@ -314,6 +314,24 @@ func main() {
 											fmt.Print("Tambah barang ? (y/n) :  ")
 											fmt.Scanln(&jwb)
 
+											if jwb == "n" {
+												var ctkNota string
+												fmt.Print("Cetak Nota ? (y/n) :  ")
+												fmt.Scanln(&ctkNota)
+
+												if ctkNota == "y" {
+													nota := TransaksiMenu.CetakNota(newActTransaksi.Transaksi_id)
+													fmt.Println("NOTA TOKOKU")
+													fmt.Println("Tanggal Transaksi : ", nota.Tgl_transaksi)
+													fmt.Println("Nomor Transaksi : ", nota.ID)
+													fmt.Println("Nama Pegawai : ", nota.Pegawai)
+													for i := 0; i < len(nota.Nama_barang); i++ {
+														fmt.Println("NO", "\t Nama Barang", "\t Qty")
+														fmt.Println(i+1, "\t", nota.Nama_barang[i], "\t", nota.Qty[i])
+													}
+
+												}
+											}
 										}
 
 									} else {
