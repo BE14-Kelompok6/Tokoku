@@ -69,7 +69,7 @@ func (tm *TransaksiMenu) MinStock(barang_id int) (int, error) {
 
 }
 
-func (tm *TransaksiMenu) UpdateStock(barang_id int, total int) (int, error) {
+func (tm *TransaksiMenu) UpdateStock(barang_id int, qty int) (int, error) {
 
 	stok, err := tm.MinStock(barang_id)
 	if err != nil {
@@ -83,8 +83,12 @@ func (tm *TransaksiMenu) UpdateStock(barang_id int, total int) (int, error) {
 		return 0, errors.New("prepare statement update stock error")
 	}
 	// fmt.Println(stok)
-	min := stok - total
-	res, err := updateStockQry.Exec(min, barang_id)
+
+	if stok-qty >= 0 {
+		stok -= qty
+	}
+
+	res, err := updateStockQry.Exec(stok, barang_id)
 
 	if err != nil {
 		log.Println("update stok ", err.Error())
@@ -99,7 +103,7 @@ func (tm *TransaksiMenu) UpdateStock(barang_id int, total int) (int, error) {
 	}
 
 	if affRows <= 0 {
-		log.Println("no record affected")
+		log.Println("Jumlah melebihi stok")
 		return 0, errors.New("no record")
 	}
 
