@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"tokoku/actTransaksi"
 	"tokoku/barang"
 	"tokoku/config"
 	"tokoku/pelanggan"
@@ -18,6 +19,7 @@ func main() {
 	var barangMenu = barang.BarangMenu{DB: conn}
 	var pelangganMenu = pelanggan.PelangganMenu{DB: conn}
 	var TransaksiMenu = transaksi.TransaksiMenu{DB: conn}
+	var ActTransaksiMenu = actTransaksi.ActTransaksiMenu{DB: conn}
 
 	for inputMenu != 0 {
 		fmt.Println("## TOKOKU ##")
@@ -284,49 +286,40 @@ func main() {
 								if trsMenu == 1 {
 									var newTransaksi transaksi.Transaksi
 									var jwb string
-									var tmpBarang []int
-									var tmpTotal []int
-									var tmp, tempTotal int
+									//Input Transaksi
 									fmt.Print("Masukan id pelanggan : ")
 									fmt.Scanln(&newTransaksi.Pelanggan_id)
-
-									for jwb != "n" {
-										barangMenu.Showbarang()
-										fmt.Println()
-										fmt.Print("Masukan id barang : ")
-										fmt.Scanln(&tmp)
-										fmt.Print("Masukan jumlah barang : ")
-										fmt.Scanln(&tempTotal)
-										TransaksiMenu.UpdateStock(tmp, tempTotal)
-										tmpBarang = append(tmpBarang, tmp)
-										tmpTotal = append(tmpTotal, tempTotal)
-										fmt.Print("Tambah barang ? (y/n) :  ")
-										fmt.Scanln(&jwb)
-
+									newTransaksi.Pegawai = userRes.ID
+									trsRes, err := TransaksiMenu.TambahTransaksi(newTransaksi)
+									if err != nil {
+										fmt.Println(err.Error())
 									}
-									for i := 0; i < len(tmpBarang); i++ {
-										newTransaksi.Barang_id = tmpBarang[i]
-										newTransaksi.Total = tmpTotal[i]
-										trsRes, err := TransaksiMenu.TambahTransaksi(newTransaksi)
-										if err != nil {
-											fmt.Println(err.Error())
+									newTransaksi.ID = trsRes
+									if trsRes != 0 {
+										fmt.Println("Transaksi telah ditambahkan")
+
+										//Aktifitas Transaksi
+										var newActTransaksi actTransaksi.ActTransaksi
+										for jwb != "n" {
+											barangMenu.Showbarang()
+											fmt.Println()
+											fmt.Print("Masukan id barang : ")
+											fmt.Scanln(&newActTransaksi.Barang_id)
+											fmt.Print("Masukan jumlah barang : ")
+											fmt.Scanln(&newActTransaksi.Qty)
+
+											newActTransaksi.Transaksi_id = trsRes
+											ActTransaksiMenu.TambahActTransaksi(newActTransaksi)
+											TransaksiMenu.UpdateStock(newActTransaksi.Barang_id, newActTransaksi.Qty)
+											fmt.Print("Tambah barang ? (y/n) :  ")
+											fmt.Scanln(&jwb)
+
 										}
 
-										newTransaksi.ID = trsRes
-										if trsRes != 0 {
-											ctkNota := ""
-											fmt.Println("Sukses menambahkan Transaksi")
-											fmt.Println("Cetak nota ? : (y/n)")
-											fmt.Scanln(&ctkNota)
-											if ctkNota == "y" {
-
-											}
-
-										} else {
-											fmt.Println("Gagal menambahkan Transaksi")
-										}
-
+									} else {
+										fmt.Println("Gagal menambahkan Transaksi")
 									}
+
 								} else if trsMenu == 9 {
 									isTrsMenu = false
 								}
