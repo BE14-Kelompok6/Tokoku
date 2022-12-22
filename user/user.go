@@ -123,7 +123,7 @@ func (am *AuthMenu) ShowUser() {
 		fmt.Println(errors.New("tampilkan barang error"))
 	}
 
-	fmt.Println("ID", "Nama Pegawai")
+	fmt.Println("ID", "\tNama Pegawai")
 	for rows.Next() {
 		var id int
 		var nama string
@@ -132,7 +132,7 @@ func (am *AuthMenu) ShowUser() {
 			log.Println("tampilkan barang ", err.Error())
 			fmt.Println(errors.New("tampilkan barang error"))
 		}
-		fmt.Println(id, nama)
+		fmt.Println(id, "\t", nama)
 	}
 
 }
