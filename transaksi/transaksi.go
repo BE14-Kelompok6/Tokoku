@@ -10,9 +10,8 @@ import (
 type Transaksi struct {
 	ID            int
 	Pelanggan_id  int
-	Barang_id     int
 	Tgl_transaksi string
-	Total         int
+	Pegawai       int
 }
 
 type TransaksiMenu struct {
@@ -20,13 +19,13 @@ type TransaksiMenu struct {
 }
 
 func (tm *TransaksiMenu) TambahTransaksi(newTransaksi Transaksi) (int, error) {
-	addTransaksiQry, err := tm.DB.Prepare("INSERT INTO transaksi (pelanggan_id, barang_id, total,tgl_transaksi) values (?,?,?,now())")
+	addTransaksiQry, err := tm.DB.Prepare("INSERT INTO transaksi (pelanggan_id,tgl_transaksi, pegawai) values (?,now(),?)")
 	if err != nil {
 		log.Println("prepare insert pelanggan ", err.Error())
 		return 0, errors.New("prepare statement insert pelanggan error")
 	}
 
-	res, err := addTransaksiQry.Exec(newTransaksi.Pelanggan_id, newTransaksi.Barang_id, newTransaksi.Total)
+	res, err := addTransaksiQry.Exec(newTransaksi.Pelanggan_id, newTransaksi.Pegawai)
 
 	if err != nil {
 		log.Println("insert transaksi ", err.Error())
@@ -102,26 +101,27 @@ func (tm *TransaksiMenu) UpdateStock(barang_id int, total int) (int, error) {
 }
 
 func (tm *TransaksiMenu) TampilkanTransaksi() {
-	rows, err := tm.DB.Query("SELECT t.id, t.tgl_transaksi, b.nama_barang, t.total, u.nama FROM transaksi t INNER JOIN barang b ON b.id = t.barang_id INNER JOIN users u ON u.id = b.user_id")
+	rows, err := tm.DB.Query("SELECT t.id, t.tgl_transaksi,b.nama_barang ,at.qty, u.nama FROM transaksi t INNER JOIN aktivitas_transaksi at ON at.transaksi_id=t.id INNER JOIN users u ON u.id = t.pegawai INNER JOIN barang b ON b.id = at.barang_id")
 	if err != nil {
 		log.Println("tampilkan transaksi ", err.Error())
 		fmt.Println(errors.New("tampilkan transaksi error"))
 	}
-	fmt.Println("ID", "Nama Barang", "Total", "Tanggal Transaksi", "Pegawai")
+	fmt.Println("ID", "Tanggal Transaksi", "Nama Barang", "Qty", "Pegawai")
 	for rows.Next() {
-		var id, total int
+		var id, qty int
 		var namabarang, tanggal, pegawai string
-		err = rows.Scan(&id, &tanggal, &namabarang, &total, &pegawai)
+		err = rows.Scan(&id, &tanggal, &namabarang, &qty, &pegawai)
 		if err != nil {
 			log.Println("tampilkan barang ", err.Error())
 			fmt.Println(errors.New("tampilkan barang error"))
 		}
-		fmt.Println(id, tanggal, namabarang, total, pegawai)
+		fmt.Println(id, tanggal, namabarang, qty, pegawai)
 	}
 
 }
 
 func (tm *TransaksiMenu) HapusTransaksi(id int) (bool, error) {
+	tm.HapusActTransaksi(id)
 	hapustransaksiQry, err := tm.DB.Prepare("DELETE FROM transaksi where id = ?")
 	if err != nil {
 		log.Println("prepare hapus transaksi ", err.Error())
@@ -129,6 +129,34 @@ func (tm *TransaksiMenu) HapusTransaksi(id int) (bool, error) {
 	}
 
 	res, err := hapustransaksiQry.Exec(id)
+	if err != nil {
+		log.Println("hapus transaksi", err.Error())
+		return false, errors.New("hapus transaksi error")
+	}
+
+	affRows, err := res.RowsAffected()
+
+	if err != nil {
+		log.Println("after hapus transaksi ", err.Error())
+		return false, errors.New("error setelah hapus transaksi")
+	}
+
+	if affRows <= 0 {
+		log.Println("no record affected")
+		return false, errors.New("no record")
+	}
+
+	return true, nil
+}
+func (tm *TransaksiMenu) HapusActTransaksi(transaksi_id int) (bool, error) {
+
+	hapusactTQry, err := tm.DB.Prepare("DELETE FROM aktivitas_transaksi where transaksi_id = ?")
+	if err != nil {
+		log.Println("prepare hapus transaksi ", err.Error())
+		return false, errors.New("prepare statement hapus transaksi error")
+	}
+
+	res, err := hapusactTQry.Exec(transaksi_id)
 	if err != nil {
 		log.Println("hapus transaksi", err.Error())
 		return false, errors.New("hapus transaksi error")
