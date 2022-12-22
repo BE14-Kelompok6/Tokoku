@@ -148,3 +148,22 @@ func (tm *TransaksiMenu) HapusTransaksi(id int) (bool, error) {
 
 	return true, nil
 }
+
+func (tm *TransaksiMenu) CetakNota(trsID int) {
+	rows, err := tm.DB.Query("SELECT t.id, t.tgl_transaksi, b.nama_barang, t.total, u.nama FROM transaksi t INNER JOIN barang b ON b.id = t.barang_id INNER JOIN users u ON u.id = b.user_id")
+	if err != nil {
+		log.Println("tampilkan transaksi ", err.Error())
+		fmt.Println(errors.New("tampilkan transaksi error"))
+	}
+	fmt.Println("ID", "Nama Barang", "Total", "Tanggal Transaksi", "Pegawai")
+	for rows.Next() {
+		var id, total int
+		var namabarang, tanggal, pegawai string
+		err = rows.Scan(&id, &tanggal, &namabarang, &total, &pegawai)
+		if err != nil {
+			log.Println("tampilkan barang ", err.Error())
+			fmt.Println(errors.New("tampilkan barang error"))
+		}
+		fmt.Println(id, tanggal, namabarang, total, pegawai)
+	}
+}
