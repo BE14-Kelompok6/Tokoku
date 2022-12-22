@@ -74,6 +74,9 @@ INNER JOIN users u
 ON u.id = b.user_id ;
 
 
+SELECT t.id, t.tgl_transaksi,b.nama_barang ,at.qty, u.nama FROM transaksi t INNER JOIN aktivitas_transaksi at ON at.transaksi_id=t.id INNER JOIN users u ON u.id = t.pegawai INNER JOIN barang b ON b.id = at.barang_id;
+SELECT * FROM aktivitas_transaksi;
+
 
 
 
