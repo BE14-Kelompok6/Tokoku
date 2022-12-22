@@ -45,16 +45,16 @@ FOREIGN KEY (`user_id`) REFERENCES users (id)
 CREATE TABLE `transaksi` (
 id int AUTO_INCREMENT PRIMARY KEY,
 pelanggan_id int NOT NULL,
-barang_id int NOT NULL,
 tgl_transaksi datetime NOT NULL,
-total int NOT NULL,
+pegawai int,
 FOREIGN KEY (`pelanggan_id`) REFERENCES pelanggan (id),
-FOREIGN KEY (`barang_id`) REFERENCES barang (id)
+FOREIGN KEY (`pegawai`) REFERENCES users (id)
 );
 
 CREATE TABLE `aktivitas_transaksi` (
 barang_id int,
 transaksi_id int,
+qty int,
 PRIMARY KEY (barang_id, transaksi_id),
 CONSTRAINT fk_barang_transaksi_barang FOREIGN KEY (barang_id) REFERENCES barang (id),
 CONSTRAINT fk_barang_transaksi_transaksi FOREIGN KEY (transaksi_id) REFERENCES transaksi(id)
@@ -67,7 +67,11 @@ INSERT INTO role VALUES(null, 'Pegawai');
 
 INSERT INTO users  VALUES(null, 'admin', 'admin', 1);
 SELECT * FROM users;
+SELECT * FROM barang;
 
+SELECT b.id, b.nama_barang, b.stok, b.tgl_input, u.nama  FROM barang b 
+INNER JOIN users u 
+ON u.id = b.user_id ;
 
 
 
