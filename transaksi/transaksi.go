@@ -14,6 +14,14 @@ type Transaksi struct {
 	Pegawai       int
 }
 
+type Nota struct {
+	ID            int
+	Tgl_transaksi string
+	Nama_barang   []string
+	Qty           []int
+	Pegawai       string
+}
+
 type TransaksiMenu struct {
 	DB *sql.DB
 }
@@ -177,21 +185,27 @@ func (tm *TransaksiMenu) HapusActTransaksi(transaksi_id int) (bool, error) {
 	return true, nil
 }
 
-func (tm *TransaksiMenu) CetakNota(trsID int) {
-	rows, err := tm.DB.Query("SELECT t.id, t.tgl_transaksi, b.nama_barang, t.total, u.nama FROM transaksi t INNER JOIN barang b ON b.id = t.barang_id INNER JOIN users u ON u.id = b.user_id")
+func (tm *TransaksiMenu) CetakNota(transaksi_id int) Nota {
+	rows, err := tm.DB.Query("SELECT t.id, t.tgl_transaksi,b.nama_barang ,at.qty, u.nama FROM transaksi t INNER JOIN aktivitas_transaksi at ON at.transaksi_id=t.id INNER JOIN users u ON u.id = t.pegawai INNER JOIN barang b ON b.id = at.barang_id AND at.transaksi_id = ? ", transaksi_id)
 	if err != nil {
-		log.Println("tampilkan transaksi ", err.Error())
-		fmt.Println(errors.New("tampilkan transaksi error"))
+		log.Println("Cetak nota ", err.Error())
+
 	}
-	fmt.Println("ID", "Nama Barang", "Total", "Tanggal Transaksi", "Pegawai")
+
+	nota := Nota{}
 	for rows.Next() {
-		var id, total int
-		var namabarang, tanggal, pegawai string
-		err = rows.Scan(&id, &tanggal, &namabarang, &total, &pegawai)
+		var qty int
+		var nama_barang string
+		i := 0
+		err = rows.Scan(&nota.ID, &nota.Tgl_transaksi, &nama_barang, &qty, &nota.Pegawai)
+		nota.Nama_barang = append(nota.Nama_barang, nama_barang)
+		nota.Qty = append(nota.Qty, qty)
 		if err != nil {
-			log.Println("tampilkan barang ", err.Error())
-			fmt.Println(errors.New("tampilkan barang error"))
+			log.Println("Cetak Nota ", err.Error())
+
 		}
-		fmt.Println(id, tanggal, namabarang, total, pegawai)
+		i++
+
 	}
+	return nota
 }
