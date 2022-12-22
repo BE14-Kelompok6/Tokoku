@@ -96,3 +96,23 @@ func (pm *PelangganMenu) HapusPelanggan(id int) (bool, error) {
 
 	return true, nil
 }
+
+func (pm *PelangganMenu) Showpelanggan() {
+	rows, err := pm.DB.Query("SELECT id, nama FROM pelanggan")
+	if err != nil {
+		log.Println("tampilkan pelanggan ", err.Error())
+		fmt.Println(errors.New("tampilkan pelanggan error"))
+	}
+	fmt.Println("ID", "\tNama Pelanggan")
+	for rows.Next() {
+		var id int
+		var nama string
+		err = rows.Scan(&id, &nama)
+		if err != nil {
+			log.Println("tampilkan barang ", err.Error())
+			fmt.Println(errors.New("tampilkan barang error"))
+		}
+		fmt.Println(id, "\t", nama)
+	}
+
+}
