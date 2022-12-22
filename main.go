@@ -296,7 +296,7 @@ func main() {
 									}
 									newTransaksi.ID = trsRes
 									if trsRes != 0 {
-										fmt.Println("Transaksi telah ditambahkan")
+										fmt.Println("Transaksi : ", newTransaksi.Pelanggan_id)
 
 										//Aktifitas Transaksi
 										var newActTransaksi actTransaksi.ActTransaksi
