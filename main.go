@@ -287,6 +287,8 @@ func main() {
 									var newTransaksi transaksi.Transaksi
 									var jwb string
 									//Input Transaksi
+									fmt.Println("Berikut pelanggan yang tersedia")
+									pelangganMenu.Showpelanggan()
 									fmt.Print("Masukan id pelanggan : ")
 									fmt.Scanln(&newTransaksi.Pelanggan_id)
 									newTransaksi.Pegawai = userRes.ID
