@@ -1,5 +1,6 @@
 # Tokoku
 Tokuku merupakan sebuah program CRUD sederhana  menggunakan Go dan Mysql
+
 Pada program ini terdapat 2 role user yaitu :
 1. Admin
 2. Pegawai
