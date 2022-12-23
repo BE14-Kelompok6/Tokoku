@@ -81,7 +81,7 @@ func (am *AuthMenu) Login(nama string, password string) (User, error) {
 
 	if err != nil {
 		log.Println("after login query ", err.Error())
-		return User{}, errors.New("tidak bisa login, kesalahan setelah error")
+		return User{}, errors.New("nama pengguna tidak terdaftar")
 	}
 
 	res.Nama = nama
