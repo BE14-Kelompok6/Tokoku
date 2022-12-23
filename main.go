@@ -23,11 +23,6 @@ func init() {
 		cmd.Stdout = os.Stdout
 		cmd.Run()
 	}
-	clear["windows"] = func() {
-		cmd := exec.Command("cmd", "/c", "cls")
-		cmd.Stdout = os.Stdout
-		cmd.Run()
-	}
 }
 func CallClear() {
 	value, ok := clear[runtime.GOOS]
