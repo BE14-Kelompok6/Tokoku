@@ -296,7 +296,7 @@ func main() {
 									if err != nil {
 										fmt.Println(err.Error())
 									}
-									newTransaksi.ID = trsRes
+									// newTransaksi.ID = trsRes
 									if trsRes != 0 {
 										fmt.Println("Transaksi : ", newTransaksi.Pelanggan_id)
 
