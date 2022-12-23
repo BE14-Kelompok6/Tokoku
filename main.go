@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"runtime"
 	"time"
 	"tokoku/actTransaksi"
 	"tokoku/barang"
@@ -10,6 +13,30 @@ import (
 	"tokoku/transaksi"
 	"tokoku/user"
 )
+
+var clear map[string]func()
+
+func init() {
+	clear = make(map[string]func())
+	clear["linux"] = func() {
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
+	clear["windows"] = func() {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
+}
+func CallClear() {
+	value, ok := clear[runtime.GOOS]
+	if ok {
+		value()
+	} else {
+		panic("Your platform is unsupported! I can't clear terminal screen :(")
+	}
+}
 
 func main() {
 	var inputMenu int = 1
@@ -22,6 +49,7 @@ func main() {
 	var ActTransaksiMenu = actTransaksi.ActTransaksiMenu{DB: conn}
 
 	for inputMenu != 0 {
+		CallClear()
 		fmt.Println("## TOKOKU ##")
 		fmt.Println("1. Login")
 		fmt.Println("0. Exit")
@@ -45,6 +73,7 @@ func main() {
 				role := userRes.ID
 				for isLogin {
 					if role == 1 {
+						CallClear()
 						now := time.Now()
 						fmt.Println("## Menu Admin ##")
 						fmt.Println("Selamat datang, ", userRes.Nama, "-", now.Format("Jan 2, 2006"))
@@ -58,6 +87,8 @@ func main() {
 						fmt.Scanln(&adminMenu)
 
 						if adminMenu == 1 {
+							CallClear()
+							fmt.Print("Tambahkan Pegawai")
 							var newUser user.User
 							fmt.Print("Masukkan nama : ")
 							fmt.Scanln(&newUser.Nama)
@@ -74,6 +105,7 @@ func main() {
 							}
 
 						} else if adminMenu == 2 {
+							CallClear()
 							var idPeg int
 							fmt.Println("Berikut daftar pegawai Tokoku :")
 							authMenu.ShowUser()
@@ -93,6 +125,7 @@ func main() {
 							}
 
 						} else if adminMenu == 3 {
+							CallClear()
 							var idbrg int
 							fmt.Println("Berikut daftar barang Tokoku :")
 							barangMenu.Showbarang()
@@ -112,6 +145,7 @@ func main() {
 							}
 
 						} else if adminMenu == 4 {
+							CallClear()
 							var idPel int
 							fmt.Println("Berikut daftar pelanggan Tokoku :")
 							pelangganMenu.TampilkanPelanggan()
@@ -131,6 +165,7 @@ func main() {
 							}
 
 						} else if adminMenu == 5 {
+							CallClear()
 							var idTrs int
 							fmt.Println("Berikut daftar transaksi Tokoku :")
 							TransaksiMenu.TampilkanTransaksi()
@@ -154,6 +189,7 @@ func main() {
 						}
 
 					} else if role > 1 {
+						CallClear()
 						pegawaiMenu := 0
 						now := time.Now()
 						fmt.Println("## Menu Pegawai ##")
@@ -166,7 +202,7 @@ func main() {
 						fmt.Scanln(&pegawaiMenu)
 
 						if pegawaiMenu == 1 {
-
+							CallClear()
 							brgMenu := 0
 							isBrgMenu := true
 							for isBrgMenu {
@@ -179,6 +215,7 @@ func main() {
 								fmt.Scanln(&brgMenu)
 
 								if brgMenu == 1 {
+									CallClear()
 									var newBarang barang.Barang
 									fmt.Println("## Tambah Barang ##")
 									fmt.Print("Masukan nama barang : ")
@@ -199,6 +236,7 @@ func main() {
 										fmt.Println("Gagal menambahkan barang")
 									}
 								} else if brgMenu == 2 {
+									CallClear()
 									var newNamaBarang string
 									var newStok, idBrg int
 									fmt.Println("## Update Barang ##")
@@ -222,6 +260,7 @@ func main() {
 										fmt.Println("Gagal mengupdate barang")
 									}
 								} else if brgMenu == 3 {
+									CallClear()
 									fmt.Println("Berikut daftar Barang Tokoku :")
 									barangMenu.TampilkanBarang()
 									fmt.Print("Tekan enter untuk melanjutkan : ")
@@ -232,6 +271,7 @@ func main() {
 							}
 
 						} else if pegawaiMenu == 2 {
+							CallClear()
 							plgMenu := 0
 							isPlgMenu := true
 							for isPlgMenu {
@@ -243,6 +283,7 @@ func main() {
 								fmt.Scanln(&plgMenu)
 
 								if plgMenu == 1 {
+									CallClear()
 									var newPelanggan pelanggan.Pelanggan
 									fmt.Println("## Data Pelanggan ##")
 									fmt.Print("Masukan nama pelanggan   : ")
@@ -263,6 +304,7 @@ func main() {
 										fmt.Println("Gagal menambahkan pelanggan")
 									}
 								} else if plgMenu == 2 {
+									CallClear()
 									fmt.Println("Berikut daftar pelanggan Tokoku :")
 									pelangganMenu.TampilkanPelanggan()
 									fmt.Print("Tekan enter untuk melanjutkan : ")
@@ -273,6 +315,7 @@ func main() {
 							}
 
 						} else if pegawaiMenu == 3 {
+							CallClear()
 							trsMenu := 0
 							isTrsMenu := true
 							for isTrsMenu {
@@ -284,6 +327,7 @@ func main() {
 								fmt.Scanln(&trsMenu)
 
 								if trsMenu == 1 {
+									CallClear()
 									var newTransaksi transaksi.Transaksi
 									var jwb string
 									//Input Transaksi
@@ -357,6 +401,7 @@ func main() {
 									}
 
 								} else if trsMenu == 2 {
+									CallClear()
 									fmt.Println("Berikut daftar transaksi Tokoku :")
 									TransaksiMenu.TampilkanTransaksi()
 									fmt.Print("Tekan enter untuk melanjutkan : ")
