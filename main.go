@@ -307,12 +307,25 @@ func main() {
 											fmt.Println()
 											fmt.Print("Masukan id barang : ")
 											fmt.Scanln(&newActTransaksi.Barang_id)
-											fmt.Print("Masukan jumlah barang : ")
-											fmt.Scanln(&newActTransaksi.Qty)
 
+											loopStok := true
+											for loopStok {
+												fmt.Print("Masukan jumlah barang : ")
+												fmt.Scanln(&newActTransaksi.Qty)
+
+												uptStok, err := TransaksiMenu.UpdateStock(newActTransaksi.Barang_id, newActTransaksi.Qty)
+												if err != nil {
+													fmt.Println(err.Error())
+												}
+												if !uptStok {
+													fmt.Println("Jumlah barang melebihi Stok")
+												} else if uptStok {
+													loopStok = false
+												}
+											}
 											newActTransaksi.Transaksi_id = trsRes
 											ActTransaksiMenu.TambahActTransaksi(newActTransaksi)
-											TransaksiMenu.UpdateStock(newActTransaksi.Barang_id, newActTransaksi.Qty)
+
 											fmt.Print("Tambah barang ? (y/n) :  ")
 											fmt.Scanln(&jwb)
 
@@ -327,10 +340,13 @@ func main() {
 													fmt.Println("Tanggal Transaksi : ", nota.Tgl_transaksi)
 													fmt.Println("Nomor Transaksi : ", nota.ID)
 													fmt.Println("Nama Pegawai : ", nota.Pegawai)
+													fmt.Println("NO", "\t Nama Barang", "\t Qty")
 													for i := 0; i < len(nota.Nama_barang); i++ {
-														fmt.Println("NO", "\t Nama Barang", "\t Qty")
 														fmt.Println(i+1, "\t", nota.Nama_barang[i], "\t", nota.Qty[i])
 													}
+													fmt.Println("Terimkasih telah belanja di Tokoku")
+													fmt.Print("Tekan enter untuk melanjutkan : ")
+													fmt.Scanln()
 
 												}
 											}
