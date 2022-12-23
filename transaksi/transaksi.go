@@ -69,7 +69,7 @@ func (tm *TransaksiMenu) MinStock(barang_id int) (int, error) {
 
 }
 
-func (tm *TransaksiMenu) UpdateStock(barang_id int, qty int) (int, error) {
+func (tm *TransaksiMenu) UpdateStock(barang_id int, qty int) (bool, error) {
 
 	stok, err := tm.MinStock(barang_id)
 	if err != nil {
@@ -78,38 +78,44 @@ func (tm *TransaksiMenu) UpdateStock(barang_id int, qty int) (int, error) {
 	}
 
 	updateStockQry, err := tm.DB.Prepare("UPDATE barang set stok = ? WHERE id = ?")
+	var uptStok bool
 	if err != nil {
 		log.Println("prepare update stock ", err.Error())
-		return 0, errors.New("prepare statement update stock error")
+		return false, errors.New("prepare statement update stock error")
 	}
 	// fmt.Println(stok)
 
 	if stok-qty >= 0 {
 		stok -= qty
+		res, err := updateStockQry.Exec(stok, barang_id)
+
+		if err != nil {
+			log.Println("update stok ", err.Error())
+			return false, errors.New("update stok error")
+		}
+
+		affRows, err := res.RowsAffected()
+
+		if err != nil {
+			log.Println("after update stok ", err.Error())
+			return false, errors.New("error setelah update stok")
+		}
+
+		if affRows <= 0 {
+			log.Println("No rows affected")
+			return false, errors.New("no record")
+		}
+
+		uptStok = true
+
+		// id, _ := res.LastInsertId()
+		// return int(id), nil
+
+	} else if stok-qty < 0 {
+		uptStok = false
 	}
+	return uptStok, nil
 
-	res, err := updateStockQry.Exec(stok, barang_id)
-
-	if err != nil {
-		log.Println("update stok ", err.Error())
-		return 0, errors.New("update stok error")
-	}
-
-	affRows, err := res.RowsAffected()
-
-	if err != nil {
-		log.Println("after update stok ", err.Error())
-		return 0, errors.New("error setelah update stok")
-	}
-
-	if affRows <= 0 {
-		log.Println("Jumlah melebihi stok")
-		return 0, errors.New("no record")
-	}
-
-	id, _ := res.LastInsertId()
-
-	return int(id), nil
 }
 
 func (tm *TransaksiMenu) TampilkanTransaksi() {
@@ -118,7 +124,7 @@ func (tm *TransaksiMenu) TampilkanTransaksi() {
 		log.Println("tampilkan transaksi ", err.Error())
 		fmt.Println(errors.New("tampilkan transaksi error"))
 	}
-	fmt.Println("ID", "Tanggal Transaksi", "Nama Barang", "Qty", "Pegawai")
+	fmt.Println("ID", "\tTanggal Transaksi", "\tNama Barang", "\tQty", "\tPegawai")
 	for rows.Next() {
 		var id, qty int
 		var namabarang, tanggal, pegawai string
@@ -127,7 +133,7 @@ func (tm *TransaksiMenu) TampilkanTransaksi() {
 			log.Println("tampilkan barang ", err.Error())
 			fmt.Println(errors.New("tampilkan barang error"))
 		}
-		fmt.Println(id, tanggal, namabarang, qty, pegawai)
+		fmt.Println(id, "\t", tanggal, "\t", namabarang, "\t", qty, "\t", pegawai)
 	}
 
 }
